@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Tirelire — Arrondi</title>
+
+<meta name="theme-color" content="#1b3a2f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tirelire">
+<meta name="application-name" content="Tirelire">
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root{
+    --ink:#132a22;
+    --jar-green:#1b3a2f;
+    --jar-green-light:#2b5142;
+    --gold:#c9a227;
+    --gold-light:#e6c65c;
+    --cream:#f6f1e4;
+    --copper:#a85c32;
+    --line: rgba(19,42,34,0.12);
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+
+  html,body{
+    margin:0; padding:0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    min-height:100vh;
+  }
+
+  body{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding: 28px 18px 40px;
+  }
+
+  .wrap{ width:100%; max-width: 420px; }
+
+  .eyebrow{
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--copper);
+    text-align:center;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  h1{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 30px;
+    text-align: center;
+    margin: 0 0 22px;
+    color: var(--jar-green);
+    letter-spacing: -0.01em;
+  }
+
+  .jar-stage{ position: relative; width: 168px; height: 190px; margin: 0 auto 22px; }
+  .jar-body{
+    position:absolute; left:50%; top: 18px; transform: translateX(-50%);
+    width: 140px; height: 160px;
+    border-radius: 14px 14px 22px 22px;
+    background: linear-gradient(180deg, rgba(27,58,47,0.06), rgba(27,58,47,0.11));
+    border: 3px solid var(--jar-green);
+    overflow: hidden;
+  }
+  .jar-fill{
+    position:absolute; left:0; right:0; bottom:0; height: 8%;
+    background: linear-gradient(180deg, var(--gold-light), var(--gold));
+    transition: height 0.6s cubic-bezier(.2,.9,.25,1);
+  }
+  .jar-fill::before{
+    content:''; position:absolute; top:-6px; left:0; right:0; height:12px;
+    background: repeating-linear-gradient(90deg, var(--gold-light) 0 10px, var(--gold) 10px 20px);
+    opacity:0.6;
+  }
+  .jar-neck{
+    position:absolute; left:50%; top:0; transform: translateX(-50%);
+    width: 62px; height: 22px; border: 3px solid var(--jar-green);
+    border-bottom: none; border-radius: 8px 8px 0 0; background: var(--cream);
+  }
+  .jar-lid{
+    position:absolute; left:50%; top:-8px; transform: translateX(-50%);
+    width: 76px; height: 12px; border-radius: 6px; background: var(--jar-green);
+  }
+
+  .result-label{
+    text-align:center; font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--jar-green-light); font-weight: 500; margin-bottom: 2px;
+  }
+  .result{
+    font-family: 'Fraunces', serif; font-weight: 700; font-size: 52px;
+    text-align:center; color: var(--jar-green); margin-bottom: 28px;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+  }
+
+  .entry-form{ display:flex; gap: 8px; margin-bottom: 18px; }
+  .entry-form input{
+    flex:1; font-family: 'JetBrains Mono', monospace; font-size: 17px;
+    padding: 13px 14px; border-radius: 10px; border: 2px solid var(--line);
+    background: white; color: var(--ink); outline:none;
+  }
+  .entry-form input:focus{ border-color: var(--gold); }
+  .entry-form button{
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px;
+    padding: 13px 18px; border-radius: 10px; border: none;
+    background: var(--jar-green); color: var(--cream); cursor:pointer;
+  }
+
+  .ledger-head{
+    display:flex; justify-content:space-between; font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--copper);
+    font-weight: 700; padding: 0 4px 6px; border-bottom: 1px solid var(--line);
+  }
+
+  .ledger{ list-style:none; margin:0; padding:0; max-height: 240px; overflow-y:auto; }
+  .ledger li{
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 11px 4px; border-bottom: 1px dashed var(--line); font-size: 15px;
+  }
+  .ledger .amt{ color: var(--ink); }
+  .ledger .diff{ color: var(--copper); font-weight:500; }
+  .ledger .del{ background:none; border:none; color: var(--line); font-size:16px; cursor:pointer; padding-left:10px; }
+
+  .empty{ text-align:center; color: var(--jar-green-light); font-size: 13px; padding: 24px 0; opacity: 0.7; }
+  .reset-row{ margin-top: 22px; text-align:center; }
+  .reset{
+    font-family:'JetBrains Mono', monospace; font-size: 12px; text-transform: uppercase;
+    background:none; border: 1px solid var(--copper); color: var(--copper);
+    padding: 10px 16px; border-radius: 20px; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">Chaque centime compte</div>
+    <h1>Tirelire d'arrondi</h1>
+
+    <div class="jar-stage">
+      <div class="jar-lid"></div>
+      <div class="jar-neck"></div>
+      <div class="jar-body"><div class="jar-fill" id="jarFill"></div></div>
+    </div>
+
+    <div class="result-label">Total collecté</div>
+    <div class="result" id="result">0,00 €</div>
+
+    <div class="entry-form">
+      <input type="text" inputmode="decimal" id="amountInput" placeholder="Montant, ex. 12,50" autocomplete="off">
+      <button type="button" id="addBtn">Ajouter</button>
+    </div>
+
+    <div class="ledger-head">
+      <span>Montant</span>
+      <span>Arrondi</span>
+    </div>
+    <ul class="ledger" id="ledger"></ul>
+    <div class="empty" id="emptyMsg">La tirelire est vide pour l'instant.</div>
+
+    <div class="reset-row">
+      <button class="reset" id="resetBtn" type="button">Remettre à zéro</button>
+    </div>
+  </div>
+
+<script>
+const STORAGE_KEY = 'tirelire-entries';
+let entries = [];
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
+  });
+}
+
+function parseAmount(str){
+  if(!str) return NaN;
+  return parseFloat(str.replace(/\s/g,'').replace(',', '.').replace('€',''));
+}
+
+function roundDiff(amount){
+  return Math.round((Math.floor(amount) + 1 - amount) * 100) / 100;
+}
+
+function fmt(n){
+  return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+}
+
+function render(){
+  const ledger = document.getElementById('ledger');
+  const emptyMsg = document.getElementById('emptyMsg');
+  ledger.innerHTML = '';
+
+  if(entries.length === 0){
+    emptyMsg.style.display = 'block';
+  } else {
+    emptyMsg.style.display = 'none';
+    entries.forEach((amount, idx) => {
+      const diff = roundDiff(amount);
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="amt">${fmt(amount)}</span><span class="diff">+${fmt(diff)}</span><button class="del" data-idx="${idx}">✕</button>`;
+      ledger.appendChild(li);
+    });
+  }
+
+  const total = entries.reduce((sum, a) => sum + roundDiff(a), 0);
+  document.getElementById('result').textContent = fmt(Math.round(total*100)/100);
+  document.getElementById('jarFill').style.height = (entries.length === 0 ? 8 : Math.min(92, 8 + (total / (total + 15)) * 84)) + '%';
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); } catch(e){}
+}
+
+function addEntry(){
+  const input = document.getElementById('amountInput');
+  const amount = parseAmount(input.value);
+  if(isNaN(amount) || amount <= 0) return;
+  entries.push(Math.round(amount*100)/100);
+  input.value = '';
+  render();
+}
+
+document.getElementById('addBtn').addEventListener('click', addEntry);
+document.getElementById('amountInput').addEventListener('keydown', (e) => { if(e.key === 'Enter') addEntry(); });
+document.getElementById('ledger').addEventListener('click', (e) => {
+  if(e.target.classList.contains('del')){
+    entries.splice(parseInt(e.target.dataset.idx, 10), 1);
+    render();
+  }
+});
+document.getElementById('resetBtn').addEventListener('click', () => { entries = []; render(); });
+
+try {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(raw) entries = JSON.parse(raw);
+} catch(e){}
+render();
+</script>
+</body>
+</html>
