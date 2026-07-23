@@ -119,10 +119,13 @@
     background: var(--jar-green); color: var(--cream); cursor:pointer;
   }
 
-  .ledger-head{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  /* Structure de tableau stricte pour un alignement au pixel près */
+  .ledger-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .ledger-head th {
     font-size: 10px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -131,26 +134,30 @@
     padding: 0 4px 6px;
     border-bottom: 1px solid var(--line);
   }
-  .ledger-head .col-right {
-    margin-right: 35px;
+
+  .ledger-head .col-amt { text-align: left; }
+  .ledger-head .col-diff { text-align: right; width: 120px; }
+  .ledger-head .col-del { width: 30px; }
+
+  .ledger-container {
+    max-height: 240px;
+    overflow-y: auto;
   }
 
-  .ledger{ list-style:none; margin:0; padding:0; max-height: 240px; overflow-y:auto; }
-  .ledger li{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .ledger-table td {
     padding: 11px 4px;
     border-bottom: 1px dashed var(--line);
     font-size: 15px;
   }
-  .ledger .amt{ color: var(--ink); flex: 1; text-align: left; }
-  .ledger .diff{ color: var(--copper); font-weight:500; width: 100px; text-align: right; }
-  .ledger .del{ 
+
+  .ledger-table .amt { color: var(--ink); text-align: left; }
+  .ledger-table .diff { color: var(--copper); font-weight: 500; text-align: right; width: 120px; }
+  .ledger-table .del-cell { text-align: right; width: 30px; }
+  .ledger-table .del { 
     background:none; border:none; color: var(--line); font-size:16px; 
-    cursor:pointer; width: 30px; text-align: right; padding: 0;
+    cursor:pointer; padding: 0;
   }
-  .ledger .del:active{ color: var(--copper); }
+  .ledger-table .del:active{ color: var(--copper); }
 
   .empty{ text-align:center; color: var(--jar-green-light); font-size: 13px; padding: 24px 0; opacity: 0.7; }
   .reset-row{ margin-top: 22px; text-align:center; }
@@ -180,11 +187,22 @@
       <button type="button" id="addBtn">Ajouter</button>
     </div>
 
-    <div class="ledger-head">
-      <span>Montant</span>
-      <span class="col-right">Arrondi</span>
+    <table class="ledger-table">
+      <thead>
+        <tr class="ledger-head">
+          <th class="col-amt">Montant</th>
+          <th class="col-diff">Arrondi</th>
+          <th class="col-del"></th>
+        </tr>
+      </thead>
+    </table>
+
+    <div class="ledger-container">
+      <table class="ledger-table">
+        <tbody id="ledger"></tbody>
+      </table>
     </div>
-    <ul class="ledger" id="ledger"></ul>
+
     <div class="empty" id="emptyMsg">La tirelire est vide pour l'instant.</div>
 
     <div class="reset-row">
@@ -226,9 +244,13 @@ function render(){
     emptyMsg.style.display = 'none';
     entries.forEach((amount, idx) => {
       const diff = roundDiff(amount);
-      const li = document.createElement('li');
-      li.innerHTML = `<span class="amt">${fmt(amount)}</span><span class="diff">+${fmt(diff)}</span><button class="del" data-idx="${idx}">✕</button>`;
-      ledger.appendChild(li);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="amt">${fmt(amount)}</td>
+        <td class="diff">+${fmt(diff)}</td>
+        <td class="del-cell"><button class="del" data-idx="${idx}">✕</button></td>
+      `;
+      ledger.appendChild(tr);
     });
   }
 
