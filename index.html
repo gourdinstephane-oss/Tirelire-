@@ -119,10 +119,11 @@
     background: var(--jar-green); color: var(--cream); cursor:pointer;
   }
 
-  /* Structure de tableau stricte pour un alignement au pixel près */
+  /* Structure de tableau stricte */
   .ledger-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
   }
 
   .ledger-head th {
@@ -136,8 +137,8 @@
   }
 
   .ledger-head .col-amt { text-align: left; }
-  .ledger-head .col-diff { text-align: right; width: 120px; }
-  .ledger-head .col-del { width: 30px; }
+  .ledger-head .col-diff { text-align: right; width: 110px; }
+  .ledger-head .col-del { width: 35px; }
 
   .ledger-container {
     max-height: 240px;
@@ -151,8 +152,8 @@
   }
 
   .ledger-table .amt { color: var(--ink); text-align: left; }
-  .ledger-table .diff { color: var(--copper); font-weight: 500; text-align: right; width: 120px; }
-  .ledger-table .del-cell { text-align: right; width: 30px; }
+  .ledger-table .diff { color: var(--copper); font-weight: 500; text-align: right; width: 110px; }
+  .ledger-table .del-cell { text-align: right; width: 35px; }
   .ledger-table .del { 
     background:none; border:none; color: var(--line); font-size:16px; 
     cursor:pointer; padding: 0;
