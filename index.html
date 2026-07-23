@@ -119,10 +119,10 @@
     background: var(--jar-green); color: var(--cream); cursor:pointer;
   }
 
-  /* Alignement précis en grille pour l'en-tête et les lignes */
   .ledger-head{
-    display:grid;
-    grid-template-columns: 1fr 1fr 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 10px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -131,23 +131,24 @@
     padding: 0 4px 6px;
     border-bottom: 1px solid var(--line);
   }
-  .ledger-head span:nth-child(1) { text-align: left; }
-  .ledger-head span:nth-child(2) { text-align: right; }
+  .ledger-head .col-right {
+    margin-right: 35px;
+  }
 
   .ledger{ list-style:none; margin:0; padding:0; max-height: 240px; overflow-y:auto; }
   .ledger li{
-    display:grid;
-    grid-template-columns: 1fr 1fr 30px;
-    align-items:center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 11px 4px;
     border-bottom: 1px dashed var(--line);
     font-size: 15px;
   }
-  .ledger .amt{ color: var(--ink); text-align: left; }
-  .ledger .diff{ color: var(--copper); font-weight:500; text-align: right; }
+  .ledger .amt{ color: var(--ink); flex: 1; text-align: left; }
+  .ledger .diff{ color: var(--copper); font-weight:500; width: 100px; text-align: right; }
   .ledger .del{ 
     background:none; border:none; color: var(--line); font-size:16px; 
-    cursor:pointer; text-align: right; padding: 0;
+    cursor:pointer; width: 30px; text-align: right; padding: 0;
   }
   .ledger .del:active{ color: var(--copper); }
 
@@ -181,8 +182,7 @@
 
     <div class="ledger-head">
       <span>Montant</span>
-      <span>Arrondi</span>
-      <span></span>
+      <span class="col-right">Arrondi</span>
     </div>
     <ul class="ledger" id="ledger"></ul>
     <div class="empty" id="emptyMsg">La tirelire est vide pour l'instant.</div>
