@@ -5,14 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Tirelire — Arrondi</title>
 
-<!-- Gestion explicite de la couleur des barres système Android / iOS -->
 <meta name="theme-color" content="#f6f1e4">
-<meta name="theme-color" content="#f6f1e4" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#f6f1e4" media="(prefers-color-scheme: dark)">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -27,67 +20,40 @@
     --cream: #f6f1e4;
     --copper: #a85c32;
     --line: rgba(19,42,34,0.12);
-    
-    background-color: #f6f1e4 !important;
     color-scheme: light;
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-  html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    background-color: #f6f1e4 !important;
-    color: var(--ink);
-    font-family: 'JetBrains Mono', monospace;
-    overscroll-behavior: none;
+  html, body {
+    margin: 0; padding: 0; width: 100%; min-height: 100vh; min-height: -webkit-fill-available;
+    background-color: var(--cream) !important; color: var(--ink);
+    font-family: 'JetBrains Mono', monospace; overscroll-behavior: none;
   }
 
   body {
-    margin: 0;
     padding: 28px 18px calc(20px + env(safe-area-inset-bottom, 20px));
-    width: 100%;
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    background-color: #f6f1e4 !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: flex; flex-direction: column; align-items: center;
   }
 
   .wrap { width: 100%; max-width: 420px; }
 
   .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--copper);
-    text-align: center;
-    margin-bottom: 6px;
-    font-weight: 700;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--copper); text-align: center; margin-bottom: 6px; font-weight: 700;
   }
 
   h1 {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 30px;
-    text-align: center;
-    margin: 0 0 22px;
-    color: var(--jar-green);
-    letter-spacing: -0.01em;
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 30px;
+    text-align: center; margin: 0 0 22px; color: var(--jar-green); letter-spacing: -0.01em;
   }
 
   .jar-stage { position: relative; width: 168px; height: 190px; margin: 0 auto 22px; }
   .jar-body {
     position: absolute; left: 50%; top: 18px; transform: translateX(-50%);
-    width: 140px; height: 160px;
-    border-radius: 14px 14px 22px 22px;
+    width: 140px; height: 160px; border-radius: 14px 14px 22px 22px;
     background: linear-gradient(180deg, rgba(27,58,47,0.06), rgba(27,58,47,0.11));
-    border: 3px solid var(--jar-green);
-    overflow: hidden;
+    border: 3px solid var(--jar-green); overflow: hidden;
   }
   .jar-fill {
     position: absolute; left: 0; right: 0; bottom: 0; height: 8%;
@@ -132,37 +98,19 @@
     background: var(--jar-green); color: var(--cream); cursor: pointer;
   }
 
-  .ledger-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
+  .ledger-container { max-height: 240px; overflow-y: auto; }
+  .ledger-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+
+  .ledger-table th {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--copper); font-weight: 700; padding: 0 4px 6px;
+    border-bottom: 1px solid var(--line); text-align: left;
+    position: sticky; top: 0; background: var(--cream); z-index: 1;
   }
+  .ledger-table th.col-diff { width: 110px; }
+  .ledger-table th.col-del { width: 35px; }
 
-  .ledger-head th {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--copper);
-    font-weight: 700;
-    padding: 0 4px 6px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .ledger-head .col-amt { text-align: left; }
-  .ledger-head .col-diff { text-align: left; width: 110px; }
-  .ledger-head .col-del { width: 35px; }
-
-  .ledger-container {
-    max-height: 240px;
-    overflow-y: auto;
-  }
-
-  .ledger-table td {
-    padding: 11px 4px;
-    border-bottom: 1px dashed var(--line);
-    font-size: 15px;
-  }
-
+  .ledger-table td { padding: 11px 4px; border-bottom: 1px dashed var(--line); font-size: 15px; }
   .ledger-table .amt { color: var(--ink); text-align: left; }
   .ledger-table .diff { color: var(--copper); font-weight: 500; text-align: left; width: 110px; }
   .ledger-table .del-cell { text-align: right; width: 35px; }
@@ -200,18 +148,15 @@
       <button type="button" id="addBtn">Ajouter</button>
     </div>
 
-    <table class="ledger-table">
-      <thead>
-        <tr class="ledger-head">
-          <th class="col-amt">Montant</th>
-          <th class="col-diff">Arrondi</th>
-          <th class="col-del"></th>
-        </tr>
-      </thead>
-    </table>
-
     <div class="ledger-container">
       <table class="ledger-table">
+        <thead>
+          <tr>
+            <th>Montant</th>
+            <th class="col-diff">Arrondi</th>
+            <th class="col-del"></th>
+          </tr>
+        </thead>
         <tbody id="ledger"></tbody>
       </table>
     </div>
@@ -224,78 +169,54 @@
   </div>
 
 <script>
-const STORAGE_KEY = 'tirelire-entries';
-let entries = [];
+const KEY = 'tirelire-entries';
+let entries = JSON.parse(localStorage.getItem(KEY) || '[]');
 
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
-  });
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
 
-function parseAmount(str){
-  if(!str) return NaN;
-  return parseFloat(str.replace(/\s/g,'').replace(',', '.').replace('€',''));
-}
+const parseAmount = str => str ? parseFloat(str.replace(/\s/g, '').replace(',', '.').replace('€', '')) : NaN;
+const roundDiff = amount => Math.round((Math.floor(amount) + 1 - amount) * 100) / 100;
+const fmt = n => n.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' €';
 
-function roundDiff(amount){
-  return Math.round((Math.floor(amount) + 1 - amount) * 100) / 100;
-}
-
-function fmt(n){
-  return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
-}
-
-function render(){
+function render() {
   const ledger = document.getElementById('ledger');
-  const emptyMsg = document.getElementById('emptyMsg');
-  ledger.innerHTML = '';
+  document.getElementById('emptyMsg').style.display = entries.length === 0 ? 'block' : 'none';
 
-  if(entries.length === 0){
-    emptyMsg.style.display = 'block';
-  } else {
-    emptyMsg.style.display = 'none';
-    entries.forEach((amount, idx) => {
-      const diff = roundDiff(amount);
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="amt">${fmt(amount)}</td>
-        <td class="diff">+${fmt(diff)}</td>
-        <td class="del-cell"><button class="del" data-idx="${idx}">✕</button></td>
-      `;
-      ledger.appendChild(tr);
-    });
-  }
+  ledger.innerHTML = entries.map((amount, idx) => `
+    <tr>
+      <td class="amt">${fmt(amount)}</td>
+      <td class="diff">+${fmt(roundDiff(amount))}</td>
+      <td class="del-cell"><button class="del" data-idx="${idx}">✕</button></td>
+    </tr>
+  `).join('');
 
   const total = entries.reduce((sum, a) => sum + roundDiff(a), 0);
-  document.getElementById('result').textContent = fmt(Math.round(total*100)/100);
+  document.getElementById('result').textContent = fmt(Math.round(total * 100) / 100);
   document.getElementById('jarFill').style.height = (entries.length === 0 ? 8 : Math.min(92, 8 + (total / (total + 15)) * 84)) + '%';
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); } catch(e){}
+  try { localStorage.setItem(KEY, JSON.stringify(entries)); } catch (e) {}
 }
 
-function addEntry(){
+function addEntry() {
   const input = document.getElementById('amountInput');
   const amount = parseAmount(input.value);
-  if(isNaN(amount) || amount <= 0) return;
-  entries.push(Math.round(amount*100)/100);
+  if (isNaN(amount) || amount <= 0) return;
+  entries.push(Math.round(amount * 100) / 100);
   input.value = '';
   render();
 }
 
 document.getElementById('addBtn').addEventListener('click', addEntry);
-document.getElementById('amountInput').addEventListener('keydown', (e) => { if(e.key === 'Enter') addEntry(); });
-document.getElementById('ledger').addEventListener('click', (e) => {
-  if(e.target.classList.contains('del')){
+document.getElementById('amountInput').addEventListener('keydown', e => { if (e.key === 'Enter') addEntry(); });
+document.getElementById('ledger').addEventListener('click', e => {
+  if (e.target.classList.contains('del')) {
     entries.splice(parseInt(e.target.dataset.idx, 10), 1);
     render();
   }
 });
 document.getElementById('resetBtn').addEventListener('click', () => { entries = []; render(); });
 
-try {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if(raw) entries = JSON.parse(raw);
-} catch(e){}
 render();
 </script>
 </body>
