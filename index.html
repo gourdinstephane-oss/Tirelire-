@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Tirelire — Arrondi</title>
 
+<!-- Gestion explicite de la couleur des barres système Android / iOS -->
 <meta name="theme-color" content="#f6f1e4">
-<meta name="background-color" content="#f6f1e4">
+<meta name="theme-color" content="#f6f1e4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#f6f1e4" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -29,19 +31,26 @@
 
   *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
 
-  html, body {
-    margin: 0; padding: 0;
-    width: 100%; height: 100%;
+  html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
     background-color: #f6f1e4 !important;
     color: var(--ink);
     font-family: 'JetBrains Mono', monospace;
+    overscroll-behavior-y: none;
   }
 
   body {
+    margin: 0;
+    padding: 28px 18px calc(20px + env(safe-area-inset-bottom));
+    width: 100%;
+    min-height: 100%;
+    background-color: #f6f1e4 !important;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 28px 18px calc(20px + env(safe-area-inset-bottom));
   }
 
   .wrap{ width:100%; max-width: 420px; }
@@ -285,5 +294,4 @@ try {
 render();
 </script>
 </body>
-  </html>
-  
+</html>
