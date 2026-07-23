@@ -7,7 +7,7 @@
   "theme_color": "#f6f1e4",
   "icons": [
     {
-      "src": "https://gourdinstephane-oss.github.io/Tirelire-/icon.png",
+      "src": "./icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
