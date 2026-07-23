@@ -119,20 +119,37 @@
     background: var(--jar-green); color: var(--cream); cursor:pointer;
   }
 
+  /* Alignement précis en grille pour l'en-tête et les lignes */
   .ledger-head{
-    display:flex; justify-content:space-between; font-size: 10px;
-    letter-spacing: 0.12em; text-transform: uppercase; color: var(--copper);
-    font-weight: 700; padding: 0 4px 6px; border-bottom: 1px solid var(--line);
+    display:grid;
+    grid-template-columns: 1fr 1fr 30px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--copper);
+    font-weight: 700;
+    padding: 0 4px 6px;
+    border-bottom: 1px solid var(--line);
   }
+  .ledger-head span:nth-child(1) { text-align: left; }
+  .ledger-head span:nth-child(2) { text-align: right; }
 
   .ledger{ list-style:none; margin:0; padding:0; max-height: 240px; overflow-y:auto; }
   .ledger li{
-    display:flex; justify-content:space-between; align-items:center;
-    padding: 11px 4px; border-bottom: 1px dashed var(--line); font-size: 15px;
+    display:grid;
+    grid-template-columns: 1fr 1fr 30px;
+    align-items:center;
+    padding: 11px 4px;
+    border-bottom: 1px dashed var(--line);
+    font-size: 15px;
   }
-  .ledger .amt{ color: var(--ink); }
-  .ledger .diff{ color: var(--copper); font-weight:500; }
-  .ledger .del{ background:none; border:none; color: var(--line); font-size:16px; cursor:pointer; padding-left:10px; }
+  .ledger .amt{ color: var(--ink); text-align: left; }
+  .ledger .diff{ color: var(--copper); font-weight:500; text-align: right; }
+  .ledger .del{ 
+    background:none; border:none; color: var(--line); font-size:16px; 
+    cursor:pointer; text-align: right; padding: 0;
+  }
+  .ledger .del:active{ color: var(--copper); }
 
   .empty{ text-align:center; color: var(--jar-green-light); font-size: 13px; padding: 24px 0; opacity: 0.7; }
   .reset-row{ margin-top: 22px; text-align:center; }
@@ -165,6 +182,7 @@
     <div class="ledger-head">
       <span>Montant</span>
       <span>Arrondi</span>
+      <span></span>
     </div>
     <ul class="ledger" id="ledger"></ul>
     <div class="empty" id="emptyMsg">La tirelire est vide pour l'instant.</div>
