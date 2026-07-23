@@ -1,17 +1,20 @@
 {
-  "name": "Tirelire d'arrondi",
+  "name": "Tirelire — Arrondi",
   "short_name": "Tirelire",
-  "description": "Calculateur d'arrondi à l'euro supérieur",
-  "start_url": "./",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f6f1e4",
-  "theme_color": "#1b3a2f",
+  "theme_color": "#f6f1e4",
   "icons": [
     {
-      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%231b3a2f'/><circle cx='256' cy='256' r='160' fill='%23f6f1e4'/><rect x='196' y='186' width='120' height='140' rx='20' fill='%23e6c65c'/></svg>",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
