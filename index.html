@@ -2,10 +2,11 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Tirelire — Arrondi</title>
 
 <meta name="theme-color" content="#1b3a2f">
+<meta name="background-color" content="#f6f1e4">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -30,21 +31,22 @@
 
   *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
 
-  html{
-    margin:0; padding:0;
-    background: var(--cream);
+  html {
+    margin: 0; padding: 0;
+    background-color: #f6f1e4 !important;
     color: var(--ink);
     font-family: 'JetBrains Mono', monospace;
-    min-height: 100dvh;
+    height: 100%;
   }
 
-  body{
-    margin:0; padding: 28px 18px 40px;
-    background: var(--cream);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    min-height: 100dvh;
+  body {
+    margin: 0; 
+    padding: 28px 18px calc(40px + env(safe-area-inset-bottom));
+    background-color: #f6f1e4 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100%;
   }
 
   .wrap{ width:100%; max-width: 420px; }
@@ -288,5 +290,4 @@ try {
 render();
 </script>
 </body>
-  </html>
-  
+</html>
