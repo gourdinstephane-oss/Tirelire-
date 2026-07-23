@@ -1,55 +1,302 @@
 <!DOCTYPE html>
 <html lang="fr">
+<head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tirelire</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Tirelire — Arrondi</title>
+
+<!-- Gestion explicite de la couleur des barres système Android / iOS -->
 <meta name="theme-color" content="#f6f1e4">
+<meta name="theme-color" content="#f6f1e4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#f6f1e4" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
 <link rel="manifest" href="manifest.json">
+
 <style>
-  body { font-family: system-ui; max-width: 320px; margin: 20px auto; padding: 10px; background: #f6f1e4; color: #132a22; }
-  .jar { height: 80px; border: 2px solid #1b3a2f; background: rgba(27,58,47,.1); display: flex; align-items: flex-end; }
-  .fill { width: 100%; background: #c9a227; transition: .3s; }
-  .tot { font-size: 2.5em; font-weight: bold; color: #1b3a2f; margin: 10px 0; }
-  .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #ccc; }
-  button, input { padding: 8px; font: inherit; }
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root {
+    --ink: #132a22;
+    --jar-green: #1b3a2f;
+    --jar-green-light: #2b5142;
+    --gold: #c9a227;
+    --gold-light: #e6c65c;
+    --cream: #f6f1e4;
+    --copper: #a85c32;
+    --line: rgba(19,42,34,0.12);
+    
+    background-color: #f6f1e4 !important;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    background-color: #f6f1e4 !important;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    overscroll-behavior: none;
+  }
+
+  body {
+    margin: 0;
+    padding: 28px 18px calc(20px + env(safe-area-inset-bottom, 20px));
+    width: 100%;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    background-color: #f6f1e4 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .wrap { width: 100%; max-width: 420px; }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--copper);
+    text-align: center;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 30px;
+    text-align: center;
+    margin: 0 0 22px;
+    color: var(--jar-green);
+    letter-spacing: -0.01em;
+  }
+
+  .jar-stage { position: relative; width: 168px; height: 190px; margin: 0 auto 22px; }
+  .jar-body {
+    position: absolute; left: 50%; top: 18px; transform: translateX(-50%);
+    width: 140px; height: 160px;
+    border-radius: 14px 14px 22px 22px;
+    background: linear-gradient(180deg, rgba(27,58,47,0.06), rgba(27,58,47,0.11));
+    border: 3px solid var(--jar-green);
+    overflow: hidden;
+  }
+  .jar-fill {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 8%;
+    background: linear-gradient(180deg, var(--gold-light), var(--gold));
+    transition: height 0.6s cubic-bezier(.2,.9,.25,1);
+  }
+  .jar-fill::before {
+    content: ''; position: absolute; top: -6px; left: 0; right: 0; height: 12px;
+    background: repeating-linear-gradient(90deg, var(--gold-light) 0 10px, var(--gold) 10px 20px);
+    opacity: 0.6;
+  }
+  .jar-neck {
+    position: absolute; left: 50%; top: 0; transform: translateX(-50%);
+    width: 62px; height: 22px; border: 3px solid var(--jar-green);
+    border-bottom: none; border-radius: 8px 8px 0 0; background: var(--cream);
+  }
+  .jar-lid {
+    position: absolute; left: 50%; top: -8px; transform: translateX(-50%);
+    width: 76px; height: 12px; border-radius: 6px; background: var(--jar-green);
+  }
+
+  .result-label {
+    text-align: center; font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--jar-green-light); font-weight: 500; margin-bottom: 2px;
+  }
+  .result {
+    font-family: 'Fraunces', serif; font-weight: 700; font-size: 52px;
+    text-align: center; color: var(--jar-green); margin-bottom: 28px;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+  }
+
+  .entry-form { display: flex; gap: 8px; margin-bottom: 18px; }
+  .entry-form input {
+    flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 17px;
+    padding: 13px 14px; border-radius: 10px; border: 2px solid var(--line);
+    background: white; color: var(--ink); outline: none;
+  }
+  .entry-form input:focus { border-color: var(--gold); }
+  .entry-form button {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px;
+    padding: 13px 18px; border-radius: 10px; border: none;
+    background: var(--jar-green); color: var(--cream); cursor: pointer;
+  }
+
+  .ledger-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .ledger-head th {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--copper);
+    font-weight: 700;
+    padding: 0 4px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .ledger-head .col-amt { text-align: left; }
+  .ledger-head .col-diff { text-align: left; width: 110px; }
+  .ledger-head .col-del { width: 35px; }
+
+  .ledger-container {
+    max-height: 240px;
+    overflow-y: auto;
+  }
+
+  .ledger-table td {
+    padding: 11px 4px;
+    border-bottom: 1px dashed var(--line);
+    font-size: 15px;
+  }
+
+  .ledger-table .amt { color: var(--ink); text-align: left; }
+  .ledger-table .diff { color: var(--copper); font-weight: 500; text-align: left; width: 110px; }
+  .ledger-table .del-cell { text-align: right; width: 35px; }
+  .ledger-table .del { 
+    background: none; border: none; color: var(--line); font-size: 16px; 
+    cursor: pointer; padding: 0;
+  }
+  .ledger-table .del:active { color: var(--copper); }
+
+  .empty { text-align: center; color: var(--jar-green-light); font-size: 13px; padding: 24px 0; opacity: 0.7; }
+  .reset-row { margin-top: 22px; text-align: center; }
+  .reset {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; text-transform: uppercase;
+    background: none; border: 1px solid var(--copper); color: var(--copper);
+    padding: 10px 16px; border-radius: 20px; cursor: pointer;
+  }
 </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">Chaque centime compte</div>
+    <h1>Tirelire d'arrondi</h1>
 
-<h2>Tirelire</h2>
-<div class="jar"><div id="fill" class="fill"></div></div>
-<div id="tot" class="tot">0,00 €</div>
+    <div class="jar-stage">
+      <div class="jar-lid"></div>
+      <div class="jar-neck"></div>
+      <div class="jar-body"><div class="jar-fill" id="jarFill"></div></div>
+    </div>
 
-<input id="inp" placeholder="Ex: 12,50">
-<button onclick="add()">Ajouter</button>
+    <div class="result-label">Total collecté</div>
+    <div class="result" id="result">0,00 €</div>
 
-<div id="list" style="margin-top:15px"></div>
-<p><button onclick="entries=[];render()">RAZ</button></p>
+    <div class="entry-form">
+      <input type="text" inputmode="decimal" id="amountInput" placeholder="Montant, ex. 12,50" autocomplete="off">
+      <button type="button" id="addBtn">Ajouter</button>
+    </div>
+
+    <table class="ledger-table">
+      <thead>
+        <tr class="ledger-head">
+          <th class="col-amt">Montant</th>
+          <th class="col-diff">Arrondi</th>
+          <th class="col-del"></th>
+        </tr>
+      </thead>
+    </table>
+
+    <div class="ledger-container">
+      <table class="ledger-table">
+        <tbody id="ledger"></tbody>
+      </table>
+    </div>
+
+    <div class="empty" id="emptyMsg">La tirelire est vide pour l'instant.</div>
+
+    <div class="reset-row">
+      <button class="reset" id="resetBtn" type="button">Remettre à zéro</button>
+    </div>
+  </div>
 
 <script>
-let entries = JSON.parse(localStorage.getItem('entries') || '[]');
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+const STORAGE_KEY = 'tirelire-entries';
+let entries = [];
 
-const diff = a => Math.round((Math.floor(a) + 1 - a) * 100) / 100;
-const fmt = n => n.toFixed(2).replace('.', ',') + ' €';
-
-function render() {
-  list.innerHTML = entries.map((a, i) => `
-    <div class="row">
-      <span>${fmt(a)}</span>
-      <span>+${fmt(diff(a))}</span>
-      <button onclick="entries.splice(${i},1);render()">✕</button>
-    </div>`).join('');
-  
-  const sum = entries.reduce((s, a) => s + diff(a), 0);
-  tot.textContent = fmt(sum);
-  fill.style.height = (entries.length ? Math.min(100, (sum / 20) * 100) : 0) + '%';
-  localStorage.setItem('entries', JSON.stringify(entries));
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
+  });
 }
 
-function add() {
-  const v = parseFloat(inp.value.replace(',', '.'));
-  if (v > 0) { entries.push(v); inp.value = ''; render(); }
+function parseAmount(str){
+  if(!str) return NaN;
+  return parseFloat(str.replace(/\s/g,'').replace(',', '.').replace('€',''));
 }
 
-inp.onkeydown = e => e.key === 'Enter' && add();
+function roundDiff(amount){
+  return Math.round((Math.floor(amount) + 1 - amount) * 100) / 100;
+}
+
+function fmt(n){
+  return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+}
+
+function render(){
+  const ledger = document.getElementById('ledger');
+  const emptyMsg = document.getElementById('emptyMsg');
+  ledger.innerHTML = '';
+
+  if(entries.length === 0){
+    emptyMsg.style.display = 'block';
+  } else {
+    emptyMsg.style.display = 'none';
+    entries.forEach((amount, idx) => {
+      const diff = roundDiff(amount);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="amt">${fmt(amount)}</td>
+        <td class="diff">+${fmt(diff)}</td>
+        <td class="del-cell"><button class="del" data-idx="${idx}">✕</button></td>
+      `;
+      ledger.appendChild(tr);
+    });
+  }
+
+  const total = entries.reduce((sum, a) => sum + roundDiff(a), 0);
+  document.getElementById('result').textContent = fmt(Math.round(total*100)/100);
+  document.getElementById('jarFill').style.height = (entries.length === 0 ? 8 : Math.min(92, 8 + (total / (total + 15)) * 84)) + '%';
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); } catch(e){}
+}
+
+function addEntry(){
+  const input = document.getElementById('amountInput');
+  const amount = parseAmount(input.value);
+  if(isNaN(amount) || amount <= 0) return;
+  entries.push(Math.round(amount*100)/100);
+  input.value = '';
+  render();
+}
+
+document.getElementById('addBtn').addEventListener('click', addEntry);
+document.getElementById('amountInput').addEventListener('keydown', (e) => { if(e.key === 'Enter') addEntry(); });
+document.getElementById('ledger').addEventListener('click', (e) => {
+  if(e.target.classList.contains('del')){
+    entries.splice(parseInt(e.target.dataset.idx, 10), 1);
+    render();
+  }
+});
+document.getElementById('resetBtn').addEventListener('click', () => { entries = []; render(); });
+
+try {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(raw) entries = JSON.parse(raw);
+} catch(e){}
 render();
 </script>
+</body>
+</html>
